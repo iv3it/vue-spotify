@@ -1,0 +1,63 @@
+@import "./variables.scss";
+
+@font-face {
+  font-family: 'Metropolis';
+  src: url('./fonts/Metropolis/Metropolis-Light.otf');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Metropolis';
+  src: url('./fonts/Metropolis/Metropolis-Regular.otf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Metropolis';
+  src: url('./fonts/Metropolis/Metropolis-Bold.otf');
+  font-weight: 700;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: $black;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  position: relative; 
+  max-width: 1280px;
+  margin: 0 auto;
+  font-family: 'Metropolis', sans-serif;
+  color: $white;
+}
+
+a {
+  text-decoration: none;
+  color: $grey;
+  transition: 0.15s;
+}
+
+a:hover {
+  color: $white;
+}
+
+.title {
+  font-size: 2rem;
+
+  @media(min-width: 576px) {
+    font-size: 3rem;
+  }
+
+  @media(min-width: 992px) {
+    font-size: 4rem;
+  }
+}
