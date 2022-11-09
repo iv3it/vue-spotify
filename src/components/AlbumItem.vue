@@ -1,19 +1,30 @@
 <template>
-  <RouterLink to="album">
-    <div class="playlistBox">
-      <img src="@/assets/icons/note.png" class="playlistBox__cover" alt=""/>
-      <button class="playlistBox__title">{{ title }}</button>
-      <p class="playlistBox__description">{{ tracks }} tracks</p>
-    </div>
-  </RouterLink>
+  <div class="playlistBox" v-if="album">
+    <RouterLink :to="{ name: 'album', params: { id: album.id, name: album.name, coverImg: getCoverImg() } }"> 
+      <img :src="getCoverImg()" class="playlistBox__cover" alt=""/>
+      <button class="playlistBox__title">{{ album.name }}</button>
+      <p class="playlistBox__description">{{ album.total_tracks }} tracks</p>
+    </RouterLink>
+  </div>
 </template>
 
 <script setup>
+import { toRefs } from 'vue'
+import DefaultCoverImg from '@/assets/icons/note.png'
 
-defineProps({
-  title: String,
-  tracks: String,
+const props = defineProps({
+  album: Object,
 })
+
+let { album } = toRefs(props);
+
+function getCoverImg() {
+  if(album.value && album.value.images && album.value.images.length > 0) {
+    return album.value.images[0].url
+  } else {
+    return DefaultCoverImg
+  }
+}
 
 </script>
 

@@ -4,12 +4,12 @@
     :tracks="userStore.favouriteList.total" 
     :fav="true"
   />
-  <PlaylistList :playlist="userStore.favouriteList" />
+  <PlaylistTrackList :playlist="userStore.favouriteList" />
 </template>
 
 <script setup>
 import Banner from '../components/Banner.vue'
-import PlaylistList from '../components/PlaylistList.vue'
+import PlaylistTrackList from '../components/PlaylistTrackList.vue'
 import { useUserStore } from '@/stores/user'
 
 let userStore = useUserStore();

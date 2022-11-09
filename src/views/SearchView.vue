@@ -2,22 +2,26 @@
   <h1 class="title">Search</h1>
   <div class="search">
     <img src="@/assets/icons/search.svg" class="search__icon" alt="search icon"/>
-    <input class="search__input" placeholder="Songs, albums or playlists" type="search" id="search" name="search">
+    <input v-model="searchQuery.query" @keyup="search" class="search__input" placeholder="Songs, albums or playlists" type="search" id="search" name="search">
   </div>
-  <section class="section">
+  <section class="section" v-if="userStore.searchResults.tracks">
     <h2>Tracks:</h2>
-    <!-- <PlaylistList /> -->
+    <AlbumTrackList :album="userStore.searchResults.tracks"/>
   </section>
-  <section class="section">
+  <section class="section" v-if="userStore.searchResults.albums">
     <h2>Albums:</h2>
     <div class="box-grid">
-      <AlbumItem title="XYZ" tracks="93" />
+      <div v-for='(album, index) in userStore.searchResults.albums.items' :key='index'>
+        <AlbumItem :album="album" />
+      </div>
     </div>
   </section>
-  <section class="section">
+  <section class="section" v-if="userStore.searchResults.playlists">
     <h2>Playlists:</h2>
     <div class="box-grid">
-      <PlaylistItem title="XYZ" tracks="93" />
+      <div v-for='(playlist, index) in userStore.searchResults.playlists.items' :key='index'>
+        <PlaylistItem :playlist="playlist" />
+      </div>
     </div>
   </section>
 </template>
@@ -25,8 +29,23 @@
 <script setup>
 import Banner from '../components/Banner.vue'
 import AlbumItem from '../components/AlbumItem.vue'
-import PlaylistList from '../components/PlaylistList.vue'
+import AlbumTrackList from '../components/AlbumTrackList.vue'
 import PlaylistItem from '../components/PlaylistItem.vue'
+import { useUserStore } from '@/stores/user'
+
+let userStore = useUserStore();
+
+let searchQuery = {
+  query: "", 
+}
+
+function search() {
+  if(searchQuery.query.length >= 3) {
+    setTimeout(() => {
+      userStore.searchForItems(searchQuery.query);
+    }, 1000);
+  }
+}
 
 </script>
 
@@ -65,19 +84,24 @@ import PlaylistItem from '../components/PlaylistItem.vue'
   display: flex;
   border: 1px solid $white;
   border-radius: 50px;
-  padding: 1rem;
+  padding: 0.65rem;
 
   &__icon {
-    width: 2rem;
+    width: 1.2rem;
     height: auto;
     object-fit: contain;
-    margin-right: 2rem;
+    margin-right: 0.75rem;
+
+    @media(min-width: 576px) {
+      width: 2rem;
+      margin-right: 2rem;
+    }
   }
 
   &__input {
     background-color: transparent;
     color: $white;
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 300;
     border: none;
     outline: none;
@@ -87,6 +111,14 @@ import PlaylistItem from '../components/PlaylistItem.vue'
     &::placeholder {
       color: $greyTransparent;
     }
+
+    @media(min-width: 576px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media(min-width: 576px) {
+    padding: 1rem;
   }
 }
 </style>

@@ -1,14 +1,36 @@
 <template>
-  <Banner title="XYZ" tracks="4" time="32" :fav="true"/>
-  <PlaylistList :playlist="userStore.playlist"/>
+  <div>
+    <Banner
+      :name="name" 
+      :tracks="userStore.album.total" 
+      :coverImg="coverImg"
+      :fav="false"
+    />
+    <AlbumTrackList :album="userStore.album" />
+  </div>
 </template>
 
 <script setup>
 import Banner from '../components/Banner.vue'
-import PlaylistList from '../components/PlaylistList.vue'
-
+import AlbumTrackList from '../components/AlbumTrackList.vue'
 import { useUserStore } from '@/stores/user'
+import { useRoute } from 'vue-router'
+import { onUnmounted } from 'vue'
+
+defineProps({
+  name: String,
+  coverImg: String,
+});
+
+const route = useRoute();
+let id = route.params.id;
+
 let userStore = useUserStore();
+await userStore.getAlbumItems(id);
+
+onUnmounted(() => {
+  userStore.album = null;  
+})
 
 </script>
 

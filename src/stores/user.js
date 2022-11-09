@@ -9,6 +9,8 @@ export const useUserStore = defineStore({
     playlists: Object,
     playlist: Object,
     favouriteList: Object,
+    searchResults: Object,
+    album: Object,
   }),
   getters: {
     
@@ -24,6 +26,10 @@ export const useUserStore = defineStore({
     
     getTracksIds(element) {
       return element.items.map(x => x.track.id);
+    },
+
+    getAlbumTracksIds(element) {
+      return element.items.map(x => x.id);
     },
 
     logIn() {
@@ -146,6 +152,35 @@ export const useUserStore = defineStore({
       } else {
         this.addFavouriteTrack(id);
       }
-    }
+    },
+
+    async searchForItems(serarchQuery) {
+      let query = await fetch(`https://api.spotify.com/v1/search?q=${serarchQuery}&type=track,album,playlist`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.token,
+        }
+      })
+      let data = await query.json();
+      data.tracks.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
+      this.searchResults = data;
+    },
+
+    async getAlbumItems(albumId) {
+      let query = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.token,
+        }
+      });
+
+      let data = await query.json();
+      data.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
+      this.album = data;
+    },
   }
 })
