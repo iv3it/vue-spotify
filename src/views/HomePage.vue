@@ -19,8 +19,6 @@ import { RouterView } from 'vue-router'
 import Navigation from '../components/Navigation.vue'
 import LoadingSpinner from '../components/LoadingSpinner.vue'
 
-window.location.hash = '';
-
 </script>
 
 <style lang="scss" scoped>

@@ -11,6 +11,9 @@ export const useUserStore = defineStore({
     favouriteList: Object,
     searchResults: Object,
     album: Object,
+    userProfile: Object,
+    userName: String,
+    recentlyPlayed: Object,
   }),
   getters: {
     
@@ -181,6 +184,36 @@ export const useUserStore = defineStore({
       let data = await query.json();
       data.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
       this.album = data;
+    },
+
+    async getUserProfileData() {
+      let query = await fetch('https://api.spotify.com/v1/me', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.token,
+        }
+      });
+
+      let data = await query.json();
+      this.userProfile = data;
+      this.userName = data.display_name;
+    },
+
+    async getRecentlyPlayed() {
+      let query = await fetch('https://api.spotify.com/v1/me/player/recently-played?limit=5', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.token,
+        }
+      });
+
+      let data = await query.json();
+      data.items.forEach(element => element.track.duration_ms = this.getDuration(element.track.duration_ms));
+      this.recentlyPlayed = data;
     },
   }
 })

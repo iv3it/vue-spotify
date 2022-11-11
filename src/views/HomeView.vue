@@ -1,23 +1,22 @@
 <template>
   <h1 class="title">Home</h1>
-  <h2 class="welcome">Welcome, XYZ!</h2>
+  <h2 class="welcome" v-if="userStore.userName">Welcome, {{ userStore.userName }}!</h2>
+  <h2 class="welcome" v-else>Welcome!</h2>
   <section class="section">
     <h2>Recently played:</h2>
-    <div class="box-grid">
-      <AlbumItem title="XYZ" tracks="93" />
-    </div>
-  </section>
-  <section class="section">
-    <h2>Based on your recent listening:</h2>
-    <div class="box-grid">
-      <PlaylistItem title="XYZ" tracks="93" />
-    </div>
+    <PlaylistTrackList :playlist="userStore.recentlyPlayed"/>
   </section>
 </template>
 
 <script setup>
-import AlbumItem from '../components/AlbumItem.vue'
-import PlaylistItem from '../components/PlaylistItem.vue'
+import { useUserStore } from '@/stores/user'
+import PlaylistTrackList from '../components/PlaylistTrackList.vue'
+
+let userStore = useUserStore();
+await userStore.getUserProfileData();
+await userStore.getRecentlyPlayed();
+
+window.location.hash = '';
 
 </script>
 
