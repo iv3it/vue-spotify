@@ -1,15 +1,25 @@
 <template>
-  <h1 class="title">Playlists</h1>
-  <div class="box-grid">
-    <div v-for='(playlist, index) in userStore.playlists.items' :key='index'>
-      <PlaylistItem :playlist="playlist" />
-    </div>
-  </div>
+  <Suspense>
+    <template #default>
+      <div>
+        <h1 class="title">Playlists</h1>
+        <div class="box-grid">
+          <div v-for='(playlist, index) in userStore.playlists.items' :key='index'>
+            <PlaylistItem :playlist="playlist" />
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #fallback>
+      <LoadingSpinner />
+    </template>
+  </Suspense>
 </template>
 
 <script setup>
 import PlaylistItem from '../components/PlaylistItem.vue'
 import { useUserStore } from '@/stores/user'
+import LoadingSpinner from '../components/LoadingSpinner.vue'
 
 let userStore = useUserStore();
 await userStore.getUserPlaylists();

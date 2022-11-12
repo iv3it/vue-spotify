@@ -1,16 +1,26 @@
 <template>
-  <h1 class="title">Home</h1>
-  <h2 class="welcome" v-if="userStore.userName">Welcome, {{ userStore.userName }}!</h2>
-  <h2 class="welcome" v-else>Welcome!</h2>
-  <section class="section">
-    <h2>Recently played:</h2>
-    <PlaylistTrackList :playlist="userStore.recentlyPlayed"/>
-  </section>
+  <Suspense>
+    <template #default>
+      <div>
+        <h1 class="title">Home</h1>
+        <h2 class="welcome" v-if="userStore.userName">Welcome, {{ userStore.userName }}!</h2>
+        <h2 class="welcome" v-else>Welcome!</h2>
+        <section class="section">
+          <h2>Recently played:</h2>
+          <PlaylistTrackList :playlist="userStore.recentlyPlayed"/>
+        </section>
+      </div>
+    </template>
+    <template #fallback>
+      <LoadingSpinner />
+    </template>
+  </Suspense>
 </template>
 
 <script setup>
 import { useUserStore } from '@/stores/user'
 import PlaylistTrackList from '../components/PlaylistTrackList.vue'
+import LoadingSpinner from '../components/LoadingSpinner.vue'
 
 let userStore = useUserStore();
 await userStore.getUserProfileData();

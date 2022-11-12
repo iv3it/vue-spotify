@@ -1,13 +1,20 @@
 <template>
-  <div>
-    <Banner
-      :name="name" 
-      :tracks="userStore.album.total" 
-      :coverImg="coverImg"
-      :fav="false"
-    />
-    <AlbumTrackList :album="userStore.album" />
-  </div>
+  <Suspense>
+    <template #default>
+      <div>
+        <Banner
+          :name="name" 
+          :tracks="userStore.album.total" 
+          :coverImg="coverImg"
+          :fav="false"
+        />
+        <AlbumTrackList :album="userStore.album" />
+      </div>
+    </template>
+    <template #fallback>
+      <LoadingSpinner />
+    </template>
+  </Suspense>
 </template>
 
 <script setup>
@@ -16,10 +23,12 @@ import AlbumTrackList from '../components/AlbumTrackList.vue'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
 import { onUnmounted } from 'vue'
+import LoadingSpinner from '../components/LoadingSpinner.vue'
 
 defineProps({
   name: String,
   coverImg: String,
+  id: String,
 });
 
 const route = useRoute();

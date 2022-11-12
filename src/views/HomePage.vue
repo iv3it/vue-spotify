@@ -9,7 +9,9 @@
       </div>
     </template>
     <template #fallback>
-      <LoadingSpinner />
+      <div class="wrapper">
+        <LoadingSpinner />
+      </div>
     </template>
   </Suspense>
 </template>
@@ -24,6 +26,7 @@ import LoadingSpinner from '../components/LoadingSpinner.vue'
 <style lang="scss" scoped>
 @import "@/assets/variables.scss";
 .wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100vh;

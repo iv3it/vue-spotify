@@ -4,26 +4,35 @@
     <img src="@/assets/icons/search.svg" class="search__icon" alt="search icon"/>
     <input v-model="searchQuery.query" @keyup="search" class="search__input" placeholder="Songs, albums or playlists" type="search" id="search" name="search">
   </div>
-  <section class="section" v-if="userStore.searchResults.tracks">
-    <h2>Tracks:</h2>
-    <AlbumTrackList :album="userStore.searchResults.tracks"/>
-  </section>
-  <section class="section" v-if="userStore.searchResults.albums">
-    <h2>Albums:</h2>
-    <div class="box-grid">
-      <div v-for='(album, index) in userStore.searchResults.albums.items' :key='index'>
-        <AlbumItem :album="album" />
+  <Suspense>
+    <template #default>
+      <div>
+        <section class="section" v-if="userStore.searchResults.tracks">
+          <h2>Tracks:</h2>
+          <AlbumTrackList :album="userStore.searchResults.tracks"/>
+        </section>
+        <section class="section" v-if="userStore.searchResults.albums">
+          <h2>Albums:</h2>
+          <div class="box-grid">
+            <div v-for='(album, index) in userStore.searchResults.albums.items' :key='index'>
+              <AlbumItem :album="album" />
+            </div>
+          </div>
+        </section>
+        <section class="section" v-if="userStore.searchResults.playlists">
+          <h2>Playlists:</h2>
+          <div class="box-grid">
+            <div v-for='(playlist, index) in userStore.searchResults.playlists.items' :key='index'>
+              <PlaylistItem :playlist="playlist" />
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
-  </section>
-  <section class="section" v-if="userStore.searchResults.playlists">
-    <h2>Playlists:</h2>
-    <div class="box-grid">
-      <div v-for='(playlist, index) in userStore.searchResults.playlists.items' :key='index'>
-        <PlaylistItem :playlist="playlist" />
-      </div>
-    </div>
-  </section>
+    </template>
+    <template #fallback>
+      <LoadingSpinner />
+    </template>
+  </Suspense>
 </template>
 
 <script setup>
@@ -32,6 +41,7 @@ import AlbumItem from '../components/AlbumItem.vue'
 import AlbumTrackList from '../components/AlbumTrackList.vue'
 import PlaylistItem from '../components/PlaylistItem.vue'
 import { useUserStore } from '@/stores/user'
+import LoadingSpinner from '../components/LoadingSpinner.vue'
 
 let userStore = useUserStore();
 

@@ -1,13 +1,20 @@
 <template>
-  <div>
-    <Banner 
-      :name="name" 
-      :tracks="userStore.playlist.total" 
-      :coverImg="coverImg"
-      :fav="false"
-    />
-    <PlaylistTrackList :playlist="userStore.playlist" />
-  </div>
+  <Suspense>
+    <template #default>
+      <div>
+        <Banner 
+          :name="name" 
+          :tracks="userStore.playlist.total" 
+          :coverImg="coverImg"
+          :fav="false"
+        />
+        <PlaylistTrackList :playlist="userStore.playlist" />
+      </div>
+    </template>
+    <template #fallback>
+      <LoadingSpinner />
+    </template>
+  </Suspense>
 </template>
 
 <script setup>
@@ -16,10 +23,12 @@ import PlaylistTrackList from '../components/PlaylistTrackList.vue'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
 import { onUnmounted } from 'vue'
+import LoadingSpinner from '../components/LoadingSpinner.vue'
 
 defineProps({
   name: String,
   coverImg: String,
+  id: String,
 });
 
 const route = useRoute();
