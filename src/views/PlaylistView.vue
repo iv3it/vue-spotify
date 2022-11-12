@@ -21,21 +21,20 @@
 import Banner from '../components/Banner.vue'
 import PlaylistTrackList from '../components/PlaylistTrackList.vue'
 import { useUserStore } from '@/stores/user'
-import { useRoute } from 'vue-router'
 import { onUnmounted } from 'vue'
 import LoadingSpinner from '../components/LoadingSpinner.vue'
+import { toRefs } from 'vue'
 
-defineProps({
+let props = defineProps({
   name: String,
   coverImg: String,
   id: String,
 });
 
-const route = useRoute();
-let id = route.params.id;
+let { name, coverImg, id } = toRefs(props);
 
 let userStore = useUserStore();
-await userStore.getPlaylistsItems(id);
+await userStore.getPlaylistsItems(id.value);
 
 onUnmounted(() => {
   userStore.playlist = null;  
