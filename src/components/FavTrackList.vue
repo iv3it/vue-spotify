@@ -1,25 +1,27 @@
 <template>
   <div class="list">
-    <div class="list__track" v-for="(item, index) in album.items" :key="index">
+    <div class="list__track" v-for="(item, index) in playlist.items" :key="index">
       <div class="list__track__box">
         <span class="list__track__number">{{ index + 1 }}</span>
+        <img v-if="item.track.album.images[0]" :src="item.track.album.images[0].url" class="list__track__cover" alt=""/>
+        <img v-else src="@/assets/icons/note.png" class="list__track__cover" alt=""/>
         <div class="list__track__name">
-          <p class="list__track__name__title">{{ item.name }}</p>
-          <p class="list__track__name__band">{{ item.artists[0].name }}</p>
+          <p class="list__track__name__title">{{ item.track.name }}</p>
+          <p class="list__track__name__band">{{ item.track.album.artists[0].name }}</p>
         </div>
       </div>
       <div class="list__track__box">
-        <p class="list__track__box__duration">{{ item.duration_ms }}</p>
+        <p class="list__track__box__duration">{{ item.track.duration_ms }}</p>
         <button 
-          class="favourite" :class="{'active': userStore.checkedFavouriteTracks[index]}" 
-          @click="userStore.toggleFavourite(item.id, index)"
+          class="favourite" :class="{'active': userStore.checkedFavouriteTracks[index] || item.isFavourite }" 
+          @click="userStore.toggleFavourite(item.track.id, index); deleteItemFromFavList(item.track.id);"
           >
         </button>
       </div>
     </div>
   </div>
-
-  <ButtonNextItems @click="loadNextItems" v-if="album.total > 10 && album.items.length < album.total && loadMoreButton"/>
+  
+  <ButtonNextItems @click="loadNextItems" v-if="playlist.total > 10 && playlist.items.length < playlist.total"/>
 </template>
 
 <script setup>
@@ -30,8 +32,7 @@ import { ref } from 'vue'
 let userStore = useUserStore();
 
 const props = defineProps({
-  album: Object,
-  loadMoreButton: Boolean,
+  playlist: Object,
 })
 
 const emit = defineEmits(['loadNextItems']);
@@ -41,6 +42,10 @@ let offset = ref(0);
 function loadNextItems() {
   offset.value = offset.value + 10;
   emit('loadNextItems', offset.value);
+}
+
+function deleteItemFromFavList(id) {
+  userStore.favouriteList.items = userStore.favouriteList.items.filter(item => item.track.id !== id);
 }
 
 </script>
@@ -70,13 +75,26 @@ function loadNextItems() {
     &__box {
       display: flex;
       align-items: center;
-      
+
       &__duration {
         font-size: 0.55rem;
 
         @media(min-width: 576px) {
           font-size: 1rem;
         }
+      }
+    }
+
+    &__cover {
+      width: 1.5rem;
+      height: auto;
+      object-fit: cover;
+      aspect-ratio: 1 / 1;
+      margin: 0 0.5rem 0 0.25rem;
+
+      @media(min-width: 576px) {
+        width: 3rem;
+        margin: 0 1rem;
       }
     }
 

@@ -9,7 +9,7 @@
       <div>
         <section class="section" v-if="userStore.searchResults.tracks">
           <h2>Tracks:</h2>
-          <AlbumTrackList :album="userStore.searchResults.tracks"/>
+          <AlbumTrackList :album="userStore.searchResults.tracks" :loadMoreButton="false"/>
         </section>
         <section class="section" v-if="userStore.searchResults.albums">
           <h2>Albums:</h2>
@@ -111,7 +111,7 @@ function search() {
   &__input {
     background-color: transparent;
     color: $white;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 300;
     border: none;
     outline: none;

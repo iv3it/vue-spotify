@@ -30,12 +30,8 @@ import LoadingSpinner from '../components/LoadingSpinner.vue'
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 2rem 2rem 0 2rem;
+  padding: 2rem 1rem 0 1rem;
   justify-content: space-between;
-
-  @media(min-width: 576px) {
-    padding: 2rem 1rem 0 1rem;
-  }
 }
 
 .box {

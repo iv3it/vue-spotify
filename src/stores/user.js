@@ -14,6 +14,7 @@ export const useUserStore = defineStore({
     userProfile: Object,
     userName: String,
     recentlyPlayed: Object,
+    checkedFavouriteTracks: Array,
   }),
   getters: {
     
@@ -78,37 +79,78 @@ export const useUserStore = defineStore({
       this.playlists = data;
     },
 
-    async getPlaylistsItems(playlistId) {
-      let query = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + this.token,
-        }
-      });
+    async getPlaylistsItems(playlistId, offset) {
+      if(offset < 1) {
+        let query = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=10`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.token,
+          }
+        });
+  
+        let data = await query.json();
+        data.items.forEach(element => element.track.duration_ms = this.getDuration(element.track.duration_ms));
+        this.playlist = data;
 
-      let data = await query.json();
-      data.items.forEach(element => element.track.duration_ms = this.getDuration(element.track.duration_ms));
-      this.playlist = data;
+        let tracksIds = this.getTracksIds(data);
+        this.checkedFavouriteTracks = await this.checkisFavourite(tracksIds);
+
+      } else {
+        let query = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=10`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.token,
+          }
+        });
+  
+        let data = await query.json();
+        data.items.forEach(element => element.track.duration_ms = this.getDuration(element.track.duration_ms));
+        this.playlist.items = [...this.playlist.items, ...data.items];
+
+        let tracksIds = this.getTracksIds(data);
+        let checkIsTrackFav = await this.checkisFavourite(tracksIds);
+        this.checkedFavouriteTracks = [...this.checkedFavouriteTracks, ...checkIsTrackFav];
+      }
     },
 
-    async getUserFavourite() {
-      let query = await fetch(`https://api.spotify.com/v1/me/tracks`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + this.token,
-        }
-      });
-
-      let data = await query.json();
-      data.items.forEach(element => { 
-        element.track.duration_ms = this.getDuration(element.track.duration_ms);
-        element.isFavourite = true;
-      });
-      this.favouriteList = data;
+    async getUserFavourite(offset) {
+      if(offset < 1) {
+        let query = await fetch(`https://api.spotify.com/v1/me/tracks?offset=${offset}&limit=10`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.token,
+          }
+        });
+  
+        let data = await query.json();
+        data.items.forEach(element => { 
+          element.track.duration_ms = this.getDuration(element.track.duration_ms);
+          element.isFavourite = true;
+        });
+        this.favouriteList = data;
+      } else {
+        let query = await fetch(`https://api.spotify.com/v1/me/tracks?offset=${offset}&limit=10`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.token,
+          }
+        });
+  
+        let data = await query.json();
+        data.items.forEach(element => { 
+          element.track.duration_ms = this.getDuration(element.track.duration_ms);
+          element.isFavourite = true;
+        });
+        this.favouriteList.items = [...this.favouriteList.items, ...data.items];
+      }
     },
 
     async checkisFavourite(id) {
@@ -147,18 +189,20 @@ export const useUserStore = defineStore({
       })
     },
 
-    async toggleFavourite(id) {
+    async toggleFavourite(id, itemIndex) {
       let isFav = await this.checkisFavourite(id);
 
       if(isFav[0]) {
         this.deleteFavouriteTrack(id);
+        this.checkedFavouriteTracks[itemIndex] = !this.checkedFavouriteTracks[itemIndex];
       } else {
         this.addFavouriteTrack(id);
+        this.checkedFavouriteTracks[itemIndex] = !this.checkedFavouriteTracks[itemIndex];
       }
     },
 
     async searchForItems(serarchQuery) {
-      let query = await fetch(`https://api.spotify.com/v1/search?q=${serarchQuery}&type=track,album,playlist`, {
+      let query = await fetch(`https://api.spotify.com/v1/search?q=${serarchQuery}&type=track,album,playlist&limit=8`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -171,19 +215,42 @@ export const useUserStore = defineStore({
       this.searchResults = data;
     },
 
-    async getAlbumItems(albumId) {
-      let query = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + this.token,
-        }
-      });
+    async getAlbumItems(albumId, offset) {
+      if(offset < 1) {
+        let query = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks?offset=${offset}&limit=10`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.token,
+          }
+        });
+  
+        let data = await query.json();
+        data.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
+        this.album = data;
 
-      let data = await query.json();
-      data.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
-      this.album = data;
+        let tracksIds = this.getAlbumTracksIds(data);
+        this.checkedFavouriteTracks = await this.checkisFavourite(tracksIds);
+
+      } else {
+        let query = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks?offset=${offset}&limit=10`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.token,
+          }
+        });
+  
+        let data = await query.json();
+        data.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
+        this.album.items = [...this.album.items, ...data.items];
+
+        let tracksIds = this.getAlbumTracksIds(data);
+        let checkIsTrackFav = await this.checkisFavourite(tracksIds);
+        this.checkedFavouriteTracks = [...this.checkedFavouriteTracks, ...checkIsTrackFav];
+      }
     },
 
     async getUserProfileData() {
@@ -214,6 +281,9 @@ export const useUserStore = defineStore({
       let data = await query.json();
       data.items.forEach(element => element.track.duration_ms = this.getDuration(element.track.duration_ms));
       this.recentlyPlayed = data;
+
+      let tracksIds = this.getTracksIds(data);
+      this.checkedFavouriteTracks = await this.checkisFavourite(tracksIds);
     },
   }
 })

@@ -35,7 +35,7 @@
     flex: 1 1 0px;
     color: $grey;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     transition: 0.15s;
 
     &:hover {
@@ -53,6 +53,10 @@
       .link__icon {
         fill: $white;
       }
+    }
+
+    @media(min-width: 576px) {
+      font-size: 0.9rem;
     }
   }
 

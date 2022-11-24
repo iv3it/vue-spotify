@@ -7,7 +7,7 @@
           :tracks="userStore.favouriteList.total" 
           :fav="true"
         />
-        <PlaylistTrackList :playlist="userStore.favouriteList" />
+        <FavTrackList :playlist="userStore.favouriteList" @loadNextItems="loadNextTracks"/>
       </div>
     </template>
     <template #fallback>
@@ -18,12 +18,16 @@
 
 <script setup>
 import Banner from '../components/Banner.vue'
-import PlaylistTrackList from '../components/PlaylistTrackList.vue'
+import FavTrackList from '../components/FavTrackList.vue'
 import { useUserStore } from '@/stores/user'
 import LoadingSpinner from '../components/LoadingSpinner.vue'
 
 let userStore = useUserStore();
-await userStore.getUserFavourite();
+await userStore.getUserFavourite(0);
+
+async function loadNextTracks(offsetValue) {
+  await userStore.getUserFavourite(offsetValue);
+}
 
 </script>
 

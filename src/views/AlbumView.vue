@@ -8,7 +8,7 @@
           :coverImg="coverImg"
           :fav="false"
         />
-        <AlbumTrackList :album="userStore.album" />
+        <AlbumTrackList :album="userStore.album" @loadNextItems="loadNextTracks" :loadMoreButton="true"/>
       </div>
     </template>
     <template #fallback>
@@ -34,7 +34,11 @@ let props = defineProps({
 let { name, coverImg, id } = toRefs(props);
 
 let userStore = useUserStore();
-await userStore.getAlbumItems(id.value);
+await userStore.getAlbumItems(id.value, 0);
+
+async function loadNextTracks(offsetValue) {
+  await userStore.getAlbumItems(id.value, offsetValue);
+}
 
 onUnmounted(() => {
   userStore.album = null;  
