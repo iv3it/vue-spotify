@@ -53,7 +53,7 @@ export const useUserStore = defineStore({
     
       let redirect_uri = 'http://127.0.0.1:5173/';
       let state = Math.random().toString(20).slice(2);
-      localStorage.setItem('stateKey', state);
+      sessionStorage.setItem('stateKey', state);
     
       let url = 'https://accounts.spotify.com/authorize';
       url += '?response_type=token';

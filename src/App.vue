@@ -15,7 +15,7 @@ import { onUnmounted } from 'vue';
 
 const userStore = useUserStore();
 
-let userTokenExist = localStorage.hasOwnProperty("user_token");
+let userTokenExist = sessionStorage.hasOwnProperty("user_token");
 
 if (userTokenExist) {
   userStore.loggedIn = true;
@@ -30,7 +30,7 @@ let findToken = url.indexOf("access_token=");
 if(findToken >= 0) {
   let token = url.substring(findToken);
   token = token.substring("access_token=".length, token.indexOf("&"));
-  localStorage.setItem('user_token', token);
+  sessionStorage.setItem('user_token', token);
   userStore.token = token;
   userStore.loggedIn = true;
 }
