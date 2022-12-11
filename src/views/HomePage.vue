@@ -5,6 +5,7 @@
         <div class="box">
           <RouterView />
         </div>
+        <AudioPlayer />
         <Navigation />
       </div>
     </template>
@@ -18,6 +19,7 @@
 
 <script setup>
 import { RouterView } from 'vue-router'
+import AudioPlayer from '../components/AudioPlayer.vue'
 import Navigation from '../components/Navigation.vue'
 import LoadingSpinner from '../components/LoadingSpinner.vue'
 

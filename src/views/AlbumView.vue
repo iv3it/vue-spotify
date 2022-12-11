@@ -8,7 +8,7 @@
           :coverImg="coverImg"
           :fav="false"
         />
-        <AlbumTrackList :album="userStore.album" @loadNextItems="loadNextTracks" :loadMoreButton="true"/>
+        <AlbumTrackList :album="userStore.album" :albumId="id" @loadNextItems="loadNextTracks" :loadMoreButton="true"/>
       </div>
     </template>
     <template #fallback>

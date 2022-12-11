@@ -49,6 +49,10 @@ export const useUserStore = defineStore({
         'playlist-read-private',
         'user-read-private',
         'playlist-modify-private',
+        'streaming',
+        'user-modify-playback-state',
+        'user-read-playback-position',
+        'user-read-playback-state',
       ];
     
       let redirect_uri = 'http://127.0.0.1:5173/';
@@ -81,7 +85,7 @@ export const useUserStore = defineStore({
 
     async getPlaylistsItems(playlistId, offset) {
       if(offset < 1) {
-        let query = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=10`, {
+        let query = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=10&market=PL`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -98,7 +102,7 @@ export const useUserStore = defineStore({
         this.checkedFavouriteTracks = await this.checkisFavourite(tracksIds);
 
       } else {
-        let query = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=10`, {
+        let query = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=10&market=PL`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -119,7 +123,7 @@ export const useUserStore = defineStore({
 
     async getUserFavourite(offset) {
       if(offset < 1) {
-        let query = await fetch(`https://api.spotify.com/v1/me/tracks?offset=${offset}&limit=10`, {
+        let query = await fetch(`https://api.spotify.com/v1/me/tracks?offset=${offset}&limit=10&market=PL`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -135,7 +139,7 @@ export const useUserStore = defineStore({
         });
         this.favouriteList = data;
       } else {
-        let query = await fetch(`https://api.spotify.com/v1/me/tracks?offset=${offset}&limit=10`, {
+        let query = await fetch(`https://api.spotify.com/v1/me/tracks?offset=${offset}&limit=10&market=PL`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -217,7 +221,7 @@ export const useUserStore = defineStore({
 
     async getAlbumItems(albumId, offset) {
       if(offset < 1) {
-        let query = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks?offset=${offset}&limit=10`, {
+        let query = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks?offset=${offset}&limit=10&market=PL`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -234,7 +238,7 @@ export const useUserStore = defineStore({
         this.checkedFavouriteTracks = await this.checkisFavourite(tracksIds);
 
       } else {
-        let query = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks?offset=${offset}&limit=10`, {
+        let query = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks?offset=${offset}&limit=10&market=PL`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',

@@ -3,8 +3,30 @@
     <div class="list__track" v-for="(item, index) in playlist.items" :key="index">
       <div class="list__track__box">
         <span class="list__track__number">{{ index + 1 }}</span>
-        <img v-if="item.track.album.images[0]" :src="item.track.album.images[0].url" class="list__track__cover" alt=""/>
-        <img v-else src="@/assets/icons/note.png" class="list__track__cover" alt=""/>
+        <div>
+          <div 
+            v-if="playerStore.currentTrackInfo && playerStore.currentTrackInfo.id == item.track.id"
+            @click="playerStore.player.togglePlay()"
+            class="list__track__playButton"
+            :class="{'play': playerStore.is_paused, 'pause': !playerStore.is_paused}" 
+            alt="Play/Pause button"
+            >
+          </div>
+          <div v-else
+            @click="playlistId ? playerStore.playSong('playlist', playlistId, index) : playerStore.playOneSong(item.track.id)"
+            class="list__track__playButton play" 
+            alt="Play/Pause button"
+            >
+          </div>
+        </div>
+        <div class="list__track__cover">
+          <img 
+            v-if="item.track.album.images[0]" 
+            :src="item.track.album.images[0].url"
+            alt=""
+          />
+          <img v-else src="@/assets/icons/note.png" alt=""/>
+        </div>
         <div class="list__track__name">
           <p class="list__track__name__title">{{ item.track.name }}</p>
           <p class="list__track__name__band">{{ item.track.album.artists[0].name }}</p>
@@ -27,12 +49,15 @@
 <script setup>
 import ButtonNextItems from '@/components/ButtonNextItems.vue'
 import { useUserStore } from '@/stores/user'
+import { usePlayerStore } from '@/stores/player'
 import { ref } from 'vue'
 
 let userStore = useUserStore();
+let playerStore = usePlayerStore();
 
 const props = defineProps({
   playlist: Object,
+  playlistId: String,
 })
 
 const emit = defineEmits(['loadNextItems']);
@@ -68,6 +93,31 @@ function loadNextItems() {
       }
     }
 
+    &__playButton {
+      cursor: pointer;
+      height: 2rem;
+      width: 2rem;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      flex-shrink: 0;
+      margin-right: 1rem;
+
+      &.play {
+        background-image: url('@/assets/icons/player/play-circle.svg');
+      }
+
+      &.pause {
+        background-image: url('@/assets/icons/player/pause-circle.svg');
+      }
+
+      @media(min-width: 576px) {
+        height: 2.6rem;
+        width: 2.6rem;
+        margin-right: unset;
+      }
+    }
+
     &__box {
       display: flex;
       align-items: center;
@@ -82,15 +132,21 @@ function loadNextItems() {
     }
 
     &__cover {
-      width: 1.5rem;
-      height: auto;
-      object-fit: cover;
-      aspect-ratio: 1 / 1;
-      margin: 0 0.5rem 0 0.25rem;
+      position: relative;
+      width: 3rem;
+      margin: 0 1rem;
+      transition: 0.25s ease-in-out;
+      flex-shrink: 0;
 
-      @media(min-width: 576px) {
-        width: 3rem;
-        margin: 0 1rem;
+      img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+      }
+
+      @media(max-width: 575px) {
+        display: none;
       }
     }
 

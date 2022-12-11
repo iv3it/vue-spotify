@@ -3,6 +3,22 @@
     <div class="list__track" v-for="(item, index) in album.items" :key="index">
       <div class="list__track__box">
         <span class="list__track__number">{{ index + 1 }}</span>
+        <div>
+          <div 
+            v-if="playerStore.currentTrackInfo && playerStore.currentTrackInfo.id == item.id"
+            @click="playerStore.player.togglePlay()"
+            class="list__track__playButton"
+            :class="{'play': playerStore.is_paused, 'pause': !playerStore.is_paused}" 
+            alt="Play/Pause button"
+            >
+          </div>
+          <div v-else
+            @click="albumId ? playerStore.playSong('album', albumId, index) : playerStore.playOneSong(item.id)"
+            class="list__track__playButton play"
+            alt="Play/Pause button"
+            >
+          </div>
+        </div>
         <div class="list__track__name">
           <p class="list__track__name__title">{{ item.name }}</p>
           <p class="list__track__name__band">{{ item.artists[0].name }}</p>
@@ -25,12 +41,15 @@
 <script setup>
 import ButtonNextItems from '@/components/ButtonNextItems.vue'
 import { useUserStore } from '@/stores/user'
+import { usePlayerStore } from '@/stores/player'
 import { ref } from 'vue'
 
 let userStore = useUserStore();
+let playerStore = usePlayerStore();
 
 const props = defineProps({
   album: Object,
+  albumId: String,
   loadMoreButton: Boolean,
 })
 
@@ -64,6 +83,30 @@ function loadNextItems() {
 
       @media(min-width: 576px) {
         font-size: 1rem;
+      }
+    }
+
+    &__playButton {
+      cursor: pointer;
+      height: 2rem;
+      width: 2rem;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      flex-shrink: 0;
+      margin-right: 1rem;
+
+      &.play {
+        background-image: url('@/assets/icons/player/play-circle.svg');
+      }
+
+      &.pause {
+        background-image: url('@/assets/icons/player/pause-circle.svg');
+      }
+
+      @media(min-width: 576px) {
+        height: 2.6rem;
+        width: 2.6rem;
       }
     }
 

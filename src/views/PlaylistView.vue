@@ -8,7 +8,7 @@
           :coverImg="coverImg"
           :fav="false"
         />
-        <PlaylistTrackList :playlist="userStore.playlist" @loadNextItems="loadNextTracks"/>
+        <PlaylistTrackList :playlist="userStore.playlist" :playlistId="id" @loadNextItems="loadNextTracks"/>
       </div>
     </template>
     <template #fallback>
