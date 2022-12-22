@@ -20,7 +20,7 @@ export const useUserStore = defineStore({
     
   },
   actions: {
-    getDuration(element) {
+    getDurationFromMs(element) {
       const seconds = Math.floor((element / 1000) % 60);
       const minutes = Math.floor((element / (60 * 1000)) % 60);
       const hours = Math.floor((element / (3600 * 1000)) % 3600);
@@ -95,7 +95,7 @@ export const useUserStore = defineStore({
         });
   
         let data = await query.json();
-        data.items.forEach(element => element.track.duration_ms = this.getDuration(element.track.duration_ms));
+        data.items.forEach(element => element.track.duration_ms = this.getDurationFromMs(element.track.duration_ms));
         this.playlist = data;
 
         let tracksIds = this.getTracksIds(data);
@@ -112,7 +112,7 @@ export const useUserStore = defineStore({
         });
   
         let data = await query.json();
-        data.items.forEach(element => element.track.duration_ms = this.getDuration(element.track.duration_ms));
+        data.items.forEach(element => element.track.duration_ms = this.getDurationFromMs(element.track.duration_ms));
         this.playlist.items = [...this.playlist.items, ...data.items];
 
         let tracksIds = this.getTracksIds(data);
@@ -134,7 +134,7 @@ export const useUserStore = defineStore({
   
         let data = await query.json();
         data.items.forEach(element => { 
-          element.track.duration_ms = this.getDuration(element.track.duration_ms);
+          element.track.duration_ms = this.getDurationFromMs(element.track.duration_ms);
           element.isFavourite = true;
         });
         this.favouriteList = data;
@@ -150,7 +150,7 @@ export const useUserStore = defineStore({
   
         let data = await query.json();
         data.items.forEach(element => { 
-          element.track.duration_ms = this.getDuration(element.track.duration_ms);
+          element.track.duration_ms = this.getDurationFromMs(element.track.duration_ms);
           element.isFavourite = true;
         });
         this.favouriteList.items = [...this.favouriteList.items, ...data.items];
@@ -215,7 +215,7 @@ export const useUserStore = defineStore({
         }
       })
       let data = await query.json();
-      data.tracks.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
+      data.tracks.items.forEach(element => element.duration_ms = this.getDurationFromMs(element.duration_ms));
       this.searchResults = data;
     },
 
@@ -231,7 +231,7 @@ export const useUserStore = defineStore({
         });
   
         let data = await query.json();
-        data.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
+        data.items.forEach(element => element.duration_ms = this.getDurationFromMs(element.duration_ms));
         this.album = data;
 
         let tracksIds = this.getAlbumTracksIds(data);
@@ -248,7 +248,7 @@ export const useUserStore = defineStore({
         });
   
         let data = await query.json();
-        data.items.forEach(element => element.duration_ms = this.getDuration(element.duration_ms));
+        data.items.forEach(element => element.duration_ms = this.getDurationFromMs(element.duration_ms));
         this.album.items = [...this.album.items, ...data.items];
 
         let tracksIds = this.getAlbumTracksIds(data);
@@ -283,7 +283,7 @@ export const useUserStore = defineStore({
       });
 
       let data = await query.json();
-      data.items.forEach(element => element.track.duration_ms = this.getDuration(element.track.duration_ms));
+      data.items.forEach(element => element.track.duration_ms = this.getDurationFromMs(element.track.duration_ms));
       this.recentlyPlayed = data;
 
       let tracksIds = this.getTracksIds(data);

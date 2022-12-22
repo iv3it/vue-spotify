@@ -14,6 +14,9 @@ export const usePlayerStore = defineStore({
     player: null,
     device_id: null,
     currentTrackInfo: null,
+    currentTrackId: null,
+    seekValue: 0,
+    seekValueMinSec: null,
   }),
   getters: {
     
@@ -52,7 +55,9 @@ export const usePlayerStore = defineStore({
               this.is_paused = currentState.paused;
             } else {
               this.currentTrackInfo = currentState.track_window.current_track;
+              this.currentTrackInfo.trackDuration = userStore.getDurationFromMs(this.currentTrackInfo.duration_ms);
               this.is_paused = currentState.paused;
+              this.currentTrackId = this.currentTrackInfo.id;
             }
           });
         }))
@@ -90,5 +95,9 @@ export const usePlayerStore = defineStore({
 
       this.playerData.visible = true;
     },
+
+    clearSeekValue() {
+      this.seekValue = 0;
+    }
   }
 })
